@@ -26,6 +26,10 @@
 #include "CbcBranchCut.hpp"
 #include "CbcBranchActual.hpp"
 #include "CbcBranchAllDifferent.hpp"
+#include "CglCutGenerator.hpp"
+#include "CglZeroHalf.hpp"
+#include "CglFlowCover.hpp"
+#include "CglProbing.hpp"
 #include "CbcCutGenerator.hpp"
 #include "CglAllDifferent.hpp"
 #include "OsiClpSolverInterface.hpp"
@@ -156,11 +160,15 @@ OsiClpSolverInterface load_problem(vector<Edge> graph,vector<int> must,int start
     for(uint i=0;i<noNodes;i++)
         if(!ins[i].empty()){
             solver.addRow(sumExpEq(ins[i],in_id(i)),0,0);
+        } else{
+            solver.addRow(UnaryVector(in_id(i),1),0,0);
         }
 
     for(uint i=0;i<noNodes;i++)
         if(!outs[i].empty()){
             solver.addRow(sumExpEq(outs[i],out_id(i)),0,0);
+        } else{
+            solver.addRow(UnaryVector(out_id(i),1),0,0);
         }
 
     //balanced coodition
@@ -169,11 +177,10 @@ OsiClpSolverInterface load_problem(vector<Edge> graph,vector<int> must,int start
             solver.addRow(BiVector(in_id(i),out_id(i),1,-1),0,0);
         }
 
-    for(int x:must)
-        if(x!=start && x!=end){
+    for(int x:must) {
             solver.addRow(UnaryVector(in_id(x),1),1,1);
             solver.addRow(UnaryVector(out_id(x),1),1,1);
-        }
+    }
 
     solver.addRow(UnaryVector(in_id(start),1),0,0);
     solver.addRow(UnaryVector(out_id(start),1),1,1);
@@ -190,8 +197,20 @@ OsiClpSolverInterface load_problem(vector<Edge> graph,vector<int> must,int start
 
 vector<double> getSolution(const OsiClpSolverInterface &problem){
     CbcModel model(problem);
+
+
     model.setMaximumSeconds(2.0);
+    CglProbing probing;
+    CglZeroHalf zeroHalf;
+    CglFlowCover flowCover;
+
+//
+    model.addCutGenerator(&probing,-1);
+    model.addCutGenerator(&flowCover,-1);
+    model.addCutGenerator(&zeroHalf,-1);
     model.branchAndBound();
+    if(model.getSolutionCount()==0) return vector<double>();
+
 
     const double *solution = model.solver()->getColSolution();
     vector<double> ret;
@@ -226,8 +245,12 @@ vector<set<int>> checkCycle(const vector<int> &x){
 }
 
 
-
-
+template<class T>
+void uniquefy(vector<T> &v){
+    sort(v.begin(),v.end());
+    auto end = unique(v.begin(),v.end());
+    while(v.end()!=end) v.pop_back();
+}
 
 
 bool addConstraints(OsiClpSolverInterface &problem,vector<double> solution){
@@ -239,35 +262,47 @@ bool addConstraints(OsiClpSolverInterface &problem,vector<double> solution){
     for(int i=0;i<n;i++) cout<<" "<<p[i];
     cout<<endl;
 
-
-
-
     auto cycles = checkCycle(p);
 
     if(cycles.empty()) {
 
 
-        for(auto e: must) if(p[e]==-1) assert(false);
+        for(auto e: must) if(p[e]==-1) {
+                cout<<"Node "<<e<<"Unreached";
+                assert(false);
+            }
         cout<<"No Cycles!"<<endl;
         return false;
     }
 
     for(auto cycle:cycles){
         vector<int> vars;
+        vector<int> vars2;
+
+
+        vector<int> vars3;
 
 
         cout<<"--"<<endl;
         for(auto elem:cycle){
             cout<<elem<<endl;
-            for(auto e:ins[elem]) if(cycle.find(topo[e].from)!=cycle.end()) vars.push_back(e);
-            for(auto e:outs[elem]) if(cycle.find(topo[e].to)!=cycle.end()) vars.push_back(e);
+            for(auto e:ins[elem]) if(cycle.find(topo[e].from)==cycle.end()) vars.push_back(e);
+            for(auto e:outs[elem]) if(cycle.find(topo[e].to)==cycle.end()) vars2.push_back(e);
         }
 
+        for(auto elem:cycle){
+            cout<<elem<<endl;
+            for(auto e:ins[elem]) if(cycle.find(topo[e].from)!=cycle.end()) vars3.push_back(e);
+            for(auto e:outs[elem]) if(cycle.find(topo[e].to)!=cycle.end()) vars3.push_back(e);
+        }
         for(auto v:vars) cout<<v<<endl;
-        sort(vars.begin(),vars.end());
-        int p = unique(vars.begin(),vars.end()) - vars.begin();
-        while(vars.size()>p) vars.pop_back();
-        problem.addRow(sumExp(vars),0,cycle.size()-1);
+
+        uniquefy(vars);
+        uniquefy(vars2);
+        uniquefy(vars3);
+        problem.addRow(sumExp(vars),1,10000);
+        problem.addRow(sumExp(vars2),1,10000);
+        problem.addRow(sumExp(vars3),0,cycle.size()-1);
     }
 
 
@@ -278,6 +313,10 @@ bool addConstraints(OsiClpSolverInterface &problem,vector<double> solution){
 
 
 vector<int> get_path(vector<double> solution){
+
+    cout<<"Getting Path!"<<endl;
+
+
     vector<bool> vis(1000,0);
 
     vector<int> path;
@@ -286,8 +325,17 @@ vector<int> get_path(vector<double> solution){
 
     int len = 0;
     while(now!=endNode){
+        int moved = 0;
         for(Edge e: ve[now]) if(solution[e.id]) {
+                moved +=1;
                 if(!vis[e.to]){
+
+
+                    if(e.to==241){
+                        cout<<e.id<<" "<<e.from<<endl;
+                    }
+
+
                     now = e.to;
                     vis[e.to]=1;
                     len += e.length;
@@ -296,6 +344,10 @@ vector<int> get_path(vector<double> solution){
                     assert(false);
                 }
             }
+        if(moved!=1){
+            cout<<"Stuck! moved="<<moved<<endl;
+            break;
+        }
     }
 
     assert(now==endNode);
@@ -325,7 +377,12 @@ tuple<int,int,vector<int>> readDemand(char *demandStr){
     end = stoi(v[1]);
     auto v2 = split(v[2],'|');
     must=strVec2int(v2);
-    return make_tuple(start,end,must);
+
+
+    vector<int> ret;
+    for(auto x:must) if(x!=start&&x!=end) ret.push_back(x);
+
+    return make_tuple(start,end,ret);
 };
 
 
@@ -351,15 +408,20 @@ void search_route(char *topoStrs[5000], int edge_num, char *demandStr){
 
     OsiClpSolverInterface problem = load_problem(topo,must,startNode,endNode);
 
-
+    bool hasSolution = true;
     vector<double> solution;
     do {
         solution = getSolution(problem);
+        if(solution.empty()) {
+            hasSolution = false;
+            break;
+        }
     }while(addConstraints(problem,solution));
 
-    auto path = get_path(solution);
-
-    for(int x:path) record_result(x);
+    if(hasSolution){
+        auto path = get_path(solution);
+        for(int x:path) record_result(x);
+    }
 
 }
 
