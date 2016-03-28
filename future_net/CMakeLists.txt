@@ -16,7 +16,7 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/../bin)
 
 # 生成Release版本
 SET(CMAKE_BUILD_TYPE "Release")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -static")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -static -Wno-sign-compare")
 SET(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0 -Wall -g -ggdb")
 SET(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3 -Wall")
 
@@ -25,7 +25,7 @@ SET(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3 -Wall")
 aux_source_directory(. DIR_SRCS)
 
 # 指定生成目标 
-add_executable(future_net ${DIR_SRCS})
+add_executable(future_net ${DIR_SRCS} TSPCut.hpp)
 target_link_libraries(future_net ${CBC_LIBRARIES})
 target_include_directories(future_net PUBLIC ${CBC_INCLUDE_DIRS})
 target_compile_options(future_net PUBLIC ${CBC_CFLAGS_OTHER})

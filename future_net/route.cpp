@@ -30,17 +30,19 @@
 #include "CglZeroHalf.hpp"
 #include "CglFlowCover.hpp"
 #include "CglProbing.hpp"
+
 #include "CbcCutGenerator.hpp"
 #include "CglAllDifferent.hpp"
 #include "OsiClpSolverInterface.hpp"
 #include "CglStored.hpp"
 #include "CoinTime.hpp"
 
-
+#include "CglRedSplit.hpp"
 #include <algorithm>
 #include <queue>
 #include <vector>
 #include <tuple>
+#include <unordered_map>
 using namespace std;
 typedef unsigned int uint;
 
@@ -89,6 +91,26 @@ int startNode = get<0>(demand);
 int endNode = get<1>(demand);
 vector<int> must = get<2>(demand);
 vector<Edge> ve[1010];
+
+
+
+class TSPEvent:public CbcEventHandler{
+    virtual CbcEventHandler* clone() {
+        return new TSPEvent();
+    }
+    virtual CbcAction event(CbcEventHandler::CbcEvent e) {
+
+        cout<<e<<endl;
+        if (e == CbcEventHandler::solution) {
+            cout<<"meow!!"<<endl;
+            return CbcEventHandler::addCuts;
+        }
+    }
+};
+
+
+
+
 
 
 CoinPackedVector UnaryVector(int ind,double x){
@@ -195,28 +217,7 @@ OsiClpSolverInterface load_problem(vector<Edge> graph,vector<int> must,int start
 }
 
 
-vector<double> getSolution(const OsiClpSolverInterface &problem){
-    CbcModel model(problem);
 
-
-    model.setMaximumSeconds(2.0);
-    CglProbing probing;
-    CglZeroHalf zeroHalf;
-    CglFlowCover flowCover;
-
-//
-    model.addCutGenerator(&probing,-1);
-    model.addCutGenerator(&flowCover,-1);
-    model.addCutGenerator(&zeroHalf,-1);
-    model.branchAndBound();
-    if(model.getSolutionCount()==0) return vector<double>();
-
-
-    const double *solution = model.solver()->getColSolution();
-    vector<double> ret;
-    for(int i=0;i<topo.size();i++) ret.push_back(solution[i]);
-    return ret;
-}
 
 vector<set<int>> checkCycle(const vector<int> &x){
 
@@ -252,21 +253,35 @@ void uniquefy(vector<T> &v){
     while(v.end()!=end) v.pop_back();
 }
 
+map<set<int>,int>  allTSPCuts;
+vector<set<int>> nowCuts;
+
+
+
+
+vector<int> getVars(const set<int> &cycle){
+    vector<int> vars3;
+
+    for(auto elem:cycle){
+        for(auto e:ins[elem]) if(cycle.find(topo[e].from)!=cycle.end()) vars3.push_back(e);
+        for(auto e:outs[elem]) if(cycle.find(topo[e].to)!=cycle.end()) vars3.push_back(e);
+    }
+
+    uniquefy(vars3);
+    return vars3;
+}
+
+
+
 
 bool addConstraints(OsiClpSolverInterface &problem,vector<double> solution){
     int n= (problem.getNumCols()- topo.size())/2;
     vector<int> p(n,-1);
     for(uint i=0;i<solution.size();i++) if(solution[i]) p[topo[i].from] = topo[i].to;
 
-
-    for(int i=0;i<n;i++) cout<<" "<<p[i];
-    cout<<endl;
-
     auto cycles = checkCycle(p);
 
     if(cycles.empty()) {
-
-
         for(auto e: must) if(p[e]==-1) {
                 cout<<"Node "<<e<<"Unreached";
                 assert(false);
@@ -276,38 +291,168 @@ bool addConstraints(OsiClpSolverInterface &problem,vector<double> solution){
     }
 
     for(auto cycle:cycles){
-        vector<int> vars;
-        vector<int> vars2;
-
-
-        vector<int> vars3;
-
-
-        cout<<"--"<<endl;
-        for(auto elem:cycle){
-            cout<<elem<<endl;
-            for(auto e:ins[elem]) if(cycle.find(topo[e].from)==cycle.end()) vars.push_back(e);
-            for(auto e:outs[elem]) if(cycle.find(topo[e].to)==cycle.end()) vars2.push_back(e);
-        }
-
-        for(auto elem:cycle){
-            cout<<elem<<endl;
-            for(auto e:ins[elem]) if(cycle.find(topo[e].from)!=cycle.end()) vars3.push_back(e);
-            for(auto e:outs[elem]) if(cycle.find(topo[e].to)!=cycle.end()) vars3.push_back(e);
-        }
-        for(auto v:vars) cout<<v<<endl;
-
-        uniquefy(vars);
-        uniquefy(vars2);
-        uniquefy(vars3);
-        problem.addRow(sumExp(vars),1,10000);
-        problem.addRow(sumExp(vars2),1,10000);
-        problem.addRow(sumExp(vars3),0,cycle.size()-1);
+        problem.addRow(sumExp(getVars(cycle)),0,cycle.size()-1);
+        allTSPCuts[cycle]=-1;
     }
+
+
+    for(auto cycle : nowCuts) if(allTSPCuts[cycle]==1){
+            allTSPCuts[cycle]=-1;
+            problem.addRow(sumExp(getVars(cycle)),0,cycle.size()-1);
+        }
+    nowCuts.clear();
+
 
 
     return true;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+class TSPCut:public CglCutGenerator{
+public:
+
+    /**@name Generate Cuts */
+    //@{
+    /** Generate cuts for the model data contained in si.
+    The generated cuts are inserted into and returned in the
+    collection of cuts cs.
+    */
+    void generateCuts( const OsiSolverInterface & si, OsiCuts & cs,
+                       const CglTreeInfo info = CglTreeInfo()){
+
+        int n = (si.getNumCols() - topo.size())/2 ;
+
+
+        vector<int> p(n,-1);
+
+
+        const double *colSolution = si.getColSolution();
+
+
+        for(int i=0;i< topo.size() ;i++) if(fabs(colSolution[i]-1)<1e-8) p[topo[i].from] = topo[i].to;
+
+
+
+        auto cycles = checkCycle(p);
+
+
+        if(!cycles.empty()){
+            for(auto cycle:cycles){
+
+                vector<int> vars3;
+                for(auto elem:cycle){
+                    for(auto e:ins[elem]) if(cycle.find(topo[e].from)!=cycle.end()) vars3.push_back(e);
+                    for(auto e:outs[elem]) if(cycle.find(topo[e].to)!=cycle.end()) vars3.push_back(e);
+                }
+
+                uniquefy(vars3);
+                // problem.addRow(sumExp(vars),1,10000);
+                // problem.addRow(sumExp(vars2),1,10000);
+
+
+                if(!allTSPCuts[cycle]){
+                    allTSPCuts[cycle] = 1;
+                    nowCuts.push_back(cycle);
+                }
+
+//                OsiRowCut rc;
+//                rc.setRow(sumExp(vars3));
+//                rc.setLb(0);
+//                rc.setUb(cycle.size()-1);
+//                cs.insert(rc);
+            }
+        }
+
+
+    }
+
+    TSPCut () {}
+    CglCutGenerator * clone() const {
+
+        return new TSPCut();
+    }
+    inline int getAggressiveness() const
+    { return aggressive_;}
+
+    /**
+       Set Aggressiveness - 0 = neutral, 100 is normal root node.
+       Really just a hint to cut generator
+    */
+    inline void setAggressiveness(int value)
+    { aggressive_=value;}
+    /// Set whether can do global cuts
+
+
+    inline bool canDoGlobalCuts() const
+    {return true;}
+    /**
+       Returns true if may generate Row cuts in tree (rather than root node).
+       Used so know if matrix will change in tree.  Really
+       meant so column cut generators can still be active
+       without worrying code.
+       Default is true
+    */
+    bool mayGenerateRowCutsInTree() const{
+        return true;
+    }
+    /// Return true if needs optimal basis to do cuts
+    bool needsOptimalBasis() const {
+        return true;
+    };
+
+    int maximumLengthOfCutInTree() const
+    { return COIN_INT_MAX;}
+
+private:
+
+    int aggressive_;
+};
+
+
+
+
+
+vector<double> getSolution(OsiClpSolverInterface &problem,double limit=0.1){
+
+    cout<<"Solving with Limit:"<<limit<<endl;
+
+
+    CbcModel model(problem);
+
+    model.setMaximumSeconds(limit);
+
+    model.addCutGenerator(new TSPCut(),1);
+
+
+
+
+
+
+//    model.addCutGenerator(&zeroHalf,-1);
+    model.initialSolve();
+    model.setPrintFrequency(1);
+    model.branchAndBound();
+    if(model.isProvenInfeasible() ) return vector<double>();
+
+
+    const double *solution = model.solver()->getColSolution();
+    vector<double> ret;
+    for(int i=0;i<topo.size();i++) ret.push_back(solution[i]);
+    return ret;
+}
+
+
+
 
 
 
@@ -353,6 +498,9 @@ vector<int> get_path(vector<double> solution){
     assert(now==endNode);
     for(auto x: must) assert(vis[x]==1);
     cout<<"Length:"<<len<<" Valid Path"<<endl;
+
+
+    cout<<"Cycle Constraints:"<<allTSPCuts.size()<<endl;
     return path;
 }
 
@@ -409,13 +557,21 @@ void search_route(char *topoStrs[5000], int edge_num, char *demandStr){
     OsiClpSolverInterface problem = load_problem(topo,must,startNode,endNode);
 
     bool hasSolution = true;
+
+    double esplasedTime = 0.0;
+    double onetime = 2.0;
+    const double totaltime = 9.5;
+
+
     vector<double> solution;
     do {
-        solution = getSolution(problem);
+        solution = getSolution(problem,onetime);
         if(solution.empty()) {
+
             hasSolution = false;
             break;
         }
+        esplasedTime += onetime;
     }while(addConstraints(problem,solution));
 
     if(hasSolution){
