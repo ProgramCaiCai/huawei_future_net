@@ -91,8 +91,8 @@ int startNode = get<0>(demand);
 int endNode = get<1>(demand);
 vector<int> must = get<2>(demand);
 vector<Edge> ve[1010];
-
-
+vector<Edge> vr[1010];
+int noNodes;
 
 class TSPEvent:public CbcEventHandler{
     virtual CbcEventHandler* clone() {
@@ -259,16 +259,29 @@ vector<set<int>> nowCuts;
 
 
 
-vector<int> getVars(const set<int> &cycle){
-    vector<int> vars3;
+void AddCycleConstraint(OsiClpSolverInterface &problem,const set<int> &cycle){
+
+
+    vector<int> vars1,vars2,vars3;
+    for(auto elem:cycle){
+        for(auto e:ins[elem]) if(cycle.find(topo[e].from)==cycle.end()) vars1.push_back(e);
+        for(auto e:outs[elem]) if(cycle.find(topo[e].to)==cycle.end()) vars2.push_back(e);
+    }
+
 
     for(auto elem:cycle){
         for(auto e:ins[elem]) if(cycle.find(topo[e].from)!=cycle.end()) vars3.push_back(e);
         for(auto e:outs[elem]) if(cycle.find(topo[e].to)!=cycle.end()) vars3.push_back(e);
     }
 
+
+    uniquefy(vars1);
+    uniquefy(vars2);
     uniquefy(vars3);
-    return vars3;
+    problem.addRow(sumExp(vars3),0,cycle.size()-1);
+//    problem.addRow(sumExp(vars1),1,10000);
+//    problem.addRow(sumExp(vars2),1,10000);
+
 }
 
 
@@ -291,18 +304,15 @@ bool addConstraints(OsiClpSolverInterface &problem,vector<double> solution){
     }
 
     for(auto cycle:cycles){
-        problem.addRow(sumExp(getVars(cycle)),0,cycle.size()-1);
         allTSPCuts[cycle]=-1;
+        AddCycleConstraint(problem,cycle);
     }
-
 
     for(auto cycle : nowCuts) if(allTSPCuts[cycle]==1){
             allTSPCuts[cycle]=-1;
-            problem.addRow(sumExp(getVars(cycle)),0,cycle.size()-1);
+            AddCycleConstraint(problem,cycle);
         }
     nowCuts.clear();
-
-
 
     return true;
 }
@@ -343,6 +353,11 @@ public:
 
 
 
+//        for(int i=0;i< topo.size() ;i++) cout<<colSolution[i]<<" ";
+//        cout<<endl;
+
+
+
         auto cycles = checkCycle(p);
 
 
@@ -356,20 +371,19 @@ public:
                 }
 
                 uniquefy(vars3);
-                // problem.addRow(sumExp(vars),1,10000);
-                // problem.addRow(sumExp(vars2),1,10000);
-
 
                 if(!allTSPCuts[cycle]){
                     allTSPCuts[cycle] = 1;
                     nowCuts.push_back(cycle);
                 }
-
 //                OsiRowCut rc;
+//
+//
 //                rc.setRow(sumExp(vars3));
 //                rc.setLb(0);
 //                rc.setUb(cycle.size()-1);
 //                cs.insert(rc);
+
             }
         }
 
@@ -430,18 +444,22 @@ vector<double> getSolution(OsiClpSolverInterface &problem,double limit=0.1){
     CbcModel model(problem);
 
     model.setMaximumSeconds(limit);
-
-    model.addCutGenerator(new TSPCut(),1);
-
-
+    model.setMaximumSavedSolutions(10);
+    model.addCutGenerator(new TSPCut(),1,NULL,true,true);
 
 
 
+
+    cout<<"Saved:"<<model.numberSavedSolutions()<<endl;
 
 //    model.addCutGenerator(&zeroHalf,-1);
     model.initialSolve();
     model.setPrintFrequency(1);
     model.branchAndBound();
+
+
+
+
     if(model.isProvenInfeasible() ) return vector<double>();
 
 
@@ -547,12 +565,51 @@ void init(char *topoStrs[5000], int edge_num, char *demandStr){
 }
 
 
+
+
+set<set<int>> all_triangles(){
+
+    map<pair<int,int>,int>  mp;
+    set<set<int>> ret;
+
+    for(auto e:topo) mp[make_pair(e.from,e.to)] =1;
+
+    for(int a=0;a<noNodes;a++){
+        for(auto e: ve[a]) {
+            int b = e.to;
+            for(auto e: vr[a]){
+                int c = e.from;
+
+                if(mp[make_pair(b,c)]){
+
+
+                    set<int> s;
+                    s.insert(a);
+                    s.insert(b);
+                    s.insert(c);
+                    ret.insert(s);
+                }
+            }
+        }
+    }
+    return ret;
+}
+
+
+
+
+
 void search_route(char *topoStrs[5000], int edge_num, char *demandStr){
 	srand(time(0));
 
 	init(topoStrs,edge_num,demandStr);
 
     for(auto e:topo) ve[e.from].push_back(e);
+    for(auto e:topo) vr[e.to].push_back(e);
+    for(auto e:topo) noNodes = max(noNodes,max(e.from,e.to)+1);
+
+
+    //for(auto triangle:all_triangles())  nowCuts.push_back(triangle);
 
     OsiClpSolverInterface problem = load_problem(topo,must,startNode,endNode);
 
@@ -563,8 +620,10 @@ void search_route(char *topoStrs[5000], int edge_num, char *demandStr){
     const double totaltime = 9.5;
 
 
+    int solvedTime = 0;
     vector<double> solution;
     do {
+        solvedTime++;
         solution = getSolution(problem,onetime);
         if(solution.empty()) {
 
@@ -573,6 +632,9 @@ void search_route(char *topoStrs[5000], int edge_num, char *demandStr){
         }
         esplasedTime += onetime;
     }while(addConstraints(problem,solution));
+
+
+    cout<<"Resolved:"<<solvedTime<<"times"<<endl;
 
     if(hasSolution){
         auto path = get_path(solution);
