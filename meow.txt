@@ -1,0 +1,877 @@
+Begin date/time is: Mon Mar 28 17:28:38 2016
+ 	used time is 0 s 0 ms.
+Open file ./test-case/case600-50/case2/topo.csv OK.
+There are 3372 lines in file ./test-case/case600-50/case2/topo.csv.
+Open file ./test-case/case600-50/case2/demand.csv OK.
+There are 1 lines in file ./test-case/case600-50/case2/demand.csv.
+Balanced 0
+Balanced 1
+Balanced 2
+Balanced 3
+Balanced 5
+Balanced 6
+Balanced 7
+Balanced 8
+Balanced 9
+Balanced 10
+Balanced 11
+Balanced 12
+Balanced 13
+Balanced 14
+Balanced 15
+Balanced 16
+Balanced 17
+Balanced 18
+Balanced 19
+Balanced 20
+Balanced 21
+Balanced 22
+Balanced 23
+Balanced 24
+Balanced 25
+Balanced 26
+Balanced 27
+Balanced 28
+Balanced 29
+Balanced 30
+Balanced 31
+Balanced 32
+Balanced 33
+Balanced 34
+Balanced 35
+Balanced 36
+Balanced 37
+Balanced 38
+Balanced 39
+Balanced 40
+Balanced 41
+Balanced 42
+Balanced 43
+Balanced 44
+Balanced 45
+Balanced 46
+Balanced 47
+Balanced 48
+Balanced 49
+Balanced 50
+Balanced 51
+Balanced 52
+Balanced 53
+Balanced 54
+Balanced 55
+Balanced 56
+Balanced 57
+Balanced 58
+Balanced 59
+Balanced 60
+Balanced 61
+Balanced 62
+Balanced 63
+Balanced 64
+Balanced 65
+Balanced 66
+Balanced 67
+Balanced 68
+Balanced 69
+Balanced 70
+Balanced 71
+Balanced 72
+Balanced 73
+Balanced 74
+Balanced 75
+Balanced 76
+Balanced 77
+Balanced 78
+Balanced 79
+Balanced 80
+Balanced 81
+Balanced 82
+Balanced 83
+Balanced 84
+Balanced 85
+Balanced 86
+Balanced 87
+Balanced 88
+Balanced 89
+Balanced 90
+Balanced 91
+Balanced 92
+Balanced 93
+Balanced 94
+Balanced 95
+Balanced 96
+Balanced 97
+Balanced 98
+Balanced 99
+Balanced 100
+Balanced 101
+Balanced 102
+Balanced 103
+Balanced 104
+Balanced 105
+Balanced 106
+Balanced 107
+Balanced 108
+Balanced 109
+Balanced 110
+Balanced 111
+Balanced 112
+Balanced 113
+Balanced 114
+Balanced 115
+Balanced 116
+Balanced 117
+Balanced 118
+Balanced 119
+Balanced 120
+Balanced 121
+Balanced 122
+Balanced 123
+Balanced 124
+Balanced 125
+Balanced 126
+Balanced 127
+Balanced 128
+Balanced 129
+Balanced 130
+Balanced 131
+Balanced 132
+Balanced 133
+Balanced 134
+Balanced 135
+Balanced 136
+Balanced 137
+Balanced 138
+Balanced 139
+Balanced 140
+Balanced 141
+Balanced 142
+Balanced 143
+Balanced 144
+Balanced 145
+Balanced 146
+Balanced 147
+Balanced 148
+Balanced 149
+Balanced 150
+Balanced 151
+Balanced 152
+Balanced 153
+Balanced 154
+Balanced 155
+Balanced 156
+Balanced 157
+Balanced 158
+Balanced 159
+Balanced 160
+Balanced 161
+Balanced 162
+Balanced 163
+Balanced 164
+Balanced 165
+Balanced 166
+Balanced 167
+Balanced 168
+Balanced 169
+Balanced 170
+Balanced 171
+Balanced 172
+Balanced 173
+Balanced 174
+Balanced 175
+Balanced 176
+Balanced 177
+Balanced 178
+Balanced 179
+Balanced 180
+Balanced 181
+Balanced 182
+Balanced 183
+Balanced 184
+Balanced 185
+Balanced 186
+Balanced 187
+Balanced 188
+Balanced 189
+Balanced 190
+Balanced 191
+Balanced 192
+Balanced 193
+Balanced 194
+Balanced 195
+Balanced 196
+Balanced 197
+Balanced 198
+Balanced 199
+Balanced 200
+Balanced 201
+Balanced 202
+Balanced 203
+Balanced 204
+Balanced 205
+Balanced 206
+Balanced 207
+Balanced 208
+Balanced 209
+Balanced 210
+Balanced 211
+Balanced 213
+Balanced 214
+Balanced 215
+Balanced 216
+Balanced 217
+Balanced 218
+Balanced 219
+Balanced 220
+Balanced 221
+Balanced 222
+Balanced 223
+Balanced 224
+Balanced 225
+Balanced 226
+Balanced 227
+Balanced 228
+Balanced 229
+Balanced 230
+Balanced 231
+Balanced 232
+Balanced 233
+Balanced 234
+Balanced 235
+Balanced 236
+Balanced 237
+Balanced 238
+Balanced 239
+Balanced 240
+Balanced 241
+Balanced 242
+Balanced 243
+Balanced 244
+Balanced 245
+Balanced 246
+Balanced 247
+Balanced 248
+Balanced 249
+Balanced 250
+Balanced 251
+Balanced 252
+Balanced 253
+Balanced 254
+Balanced 255
+Balanced 256
+Balanced 257
+Balanced 258
+Balanced 259
+Balanced 260
+Balanced 261
+Balanced 262
+Balanced 263
+Balanced 264
+Balanced 265
+Balanced 266
+Balanced 267
+Balanced 268
+Balanced 269
+Balanced 270
+Balanced 271
+Balanced 272
+Balanced 273
+Balanced 274
+Balanced 275
+Balanced 276
+Balanced 277
+Balanced 278
+Balanced 279
+Balanced 280
+Balanced 281
+Balanced 282
+Balanced 283
+Balanced 284
+Balanced 285
+Balanced 286
+Balanced 287
+Balanced 288
+Balanced 289
+Balanced 290
+Balanced 291
+Balanced 292
+Balanced 293
+Balanced 294
+Balanced 295
+Balanced 296
+Balanced 297
+Balanced 298
+Balanced 299
+Balanced 300
+Balanced 301
+Balanced 302
+Balanced 303
+Balanced 304
+Balanced 305
+Balanced 306
+Balanced 307
+Balanced 308
+Balanced 309
+Balanced 310
+Balanced 311
+Balanced 312
+Balanced 313
+Balanced 314
+Balanced 315
+Balanced 316
+Balanced 317
+Balanced 318
+Balanced 319
+Balanced 320
+Balanced 321
+Balanced 322
+Balanced 323
+Balanced 324
+Balanced 325
+Balanced 326
+Balanced 327
+Balanced 328
+Balanced 329
+Balanced 330
+Balanced 331
+Balanced 332
+Balanced 333
+Balanced 334
+Balanced 335
+Balanced 336
+Balanced 337
+Balanced 338
+Balanced 339
+Balanced 340
+Balanced 341
+Balanced 342
+Balanced 343
+Balanced 344
+Balanced 345
+Balanced 346
+Balanced 347
+Balanced 348
+Balanced 349
+Balanced 350
+Balanced 351
+Balanced 352
+Balanced 353
+Balanced 354
+Balanced 355
+Balanced 356
+Balanced 357
+Balanced 358
+Balanced 359
+Balanced 360
+Balanced 361
+Balanced 362
+Balanced 363
+Balanced 364
+Balanced 365
+Balanced 366
+Balanced 367
+Balanced 368
+Balanced 369
+Balanced 370
+Balanced 371
+Balanced 372
+Balanced 373
+Balanced 374
+Balanced 375
+Balanced 376
+Balanced 377
+Balanced 378
+Balanced 379
+Balanced 380
+Balanced 381
+Balanced 382
+Balanced 383
+Balanced 384
+Balanced 385
+Balanced 386
+Balanced 387
+Balanced 388
+Balanced 389
+Balanced 390
+Balanced 391
+Balanced 392
+Balanced 393
+Balanced 394
+Balanced 395
+Balanced 396
+Balanced 397
+Balanced 398
+Balanced 399
+Balanced 400
+Balanced 401
+Balanced 402
+Balanced 403
+Balanced 404
+Balanced 405
+Balanced 406
+Balanced 407
+Balanced 408
+Balanced 409
+Balanced 410
+Balanced 411
+Balanced 412
+Balanced 413
+Balanced 414
+Balanced 415
+Balanced 416
+Balanced 417
+Balanced 418
+Balanced 419
+Balanced 420
+Balanced 421
+Balanced 422
+Balanced 423
+Balanced 424
+Balanced 425
+Balanced 426
+Balanced 427
+Balanced 428
+Balanced 429
+Balanced 430
+Balanced 431
+Balanced 432
+Balanced 433
+Balanced 434
+Balanced 435
+Balanced 436
+Balanced 437
+Balanced 438
+Balanced 439
+Balanced 440
+Balanced 441
+Balanced 442
+Balanced 443
+Balanced 444
+Balanced 445
+Balanced 446
+Balanced 447
+Balanced 448
+Balanced 449
+Balanced 450
+Balanced 451
+Balanced 452
+Balanced 453
+Balanced 454
+Balanced 455
+Balanced 456
+Balanced 457
+Balanced 458
+Balanced 459
+Balanced 460
+Balanced 461
+Balanced 462
+Balanced 463
+Balanced 464
+Balanced 465
+Balanced 466
+Balanced 467
+Balanced 468
+Balanced 469
+Balanced 470
+Balanced 471
+Balanced 472
+Balanced 473
+Balanced 474
+Balanced 475
+Balanced 476
+Balanced 477
+Balanced 478
+Balanced 479
+Balanced 480
+Balanced 481
+Balanced 482
+Balanced 483
+Balanced 484
+Balanced 485
+Balanced 486
+Balanced 487
+Balanced 488
+Balanced 489
+Balanced 490
+Balanced 491
+Balanced 492
+Balanced 493
+Balanced 494
+Balanced 495
+Balanced 496
+Balanced 497
+Balanced 498
+Balanced 499
+Balanced 500
+Balanced 501
+Balanced 502
+Balanced 503
+Balanced 504
+Balanced 505
+Balanced 506
+Balanced 507
+Balanced 508
+Balanced 509
+Balanced 510
+Balanced 511
+Balanced 512
+Balanced 513
+Balanced 514
+Balanced 515
+Balanced 516
+Balanced 517
+Balanced 518
+Balanced 519
+Balanced 520
+Balanced 521
+Balanced 522
+Balanced 523
+Balanced 524
+Balanced 525
+Balanced 526
+Balanced 527
+Balanced 528
+Balanced 529
+Balanced 530
+Balanced 531
+Balanced 532
+Balanced 533
+Balanced 534
+Balanced 535
+Balanced 536
+Balanced 537
+Balanced 538
+Balanced 539
+Balanced 540
+Balanced 541
+Balanced 542
+Balanced 543
+Balanced 544
+Balanced 545
+Balanced 546
+Balanced 547
+Balanced 548
+Balanced 549
+Balanced 550
+Balanced 551
+Balanced 552
+Balanced 553
+Balanced 554
+Balanced 555
+Balanced 556
+Balanced 557
+Balanced 558
+Balanced 559
+Balanced 560
+Balanced 561
+Balanced 562
+Balanced 563
+Balanced 564
+Balanced 565
+Balanced 566
+Balanced 567
+Balanced 568
+Balanced 569
+Balanced 570
+Balanced 571
+Balanced 572
+Balanced 573
+Balanced 574
+Balanced 575
+Balanced 576
+Balanced 577
+Balanced 578
+Balanced 579
+Balanced 580
+Balanced 581
+Balanced 582
+Balanced 583
+Balanced 584
+Balanced 585
+Balanced 586
+Balanced 587
+Balanced 588
+Balanced 589
+Balanced 590
+Balanced 591
+Balanced 592
+Balanced 593
+Balanced 594
+Balanced 595
+Balanced 596
+Balanced 597
+Balanced 598
+Balanced 599
+Clp0006I 0  Obj 0 Primal inf 101.99999 (102)
+Clp0006I 200  Obj 345 Primal inf 79.999992 (80)
+Clp0006I 400  Obj 423 Primal inf 64.999994 (64)
+Clp0006I 600  Obj 559 Primal inf 44.999996 (42)
+Clp0006I 800  Obj 628 Primal inf 35.999996 (36)
+Clp0006I 851  Obj 634
+Clp0000I Optimal - objective value 634
+Clp0000I Optimal - objective value 634
+Clp0006I 0  Obj 634 Primal inf 353.99996 (354)
+Clp0006I 200  Obj 634 Primal inf 111.99999 (112)
+Clp0006I 254  Obj 634
+Clp0000I Optimal - objective value 634
+Cbc0004I Integer solution of 634 found after 0 iterations and 0 nodes (0.03 seconds)
+Cbc0001I Search completed - best objective 634, took 0 iterations and 0 nodes (0.03 seconds)
+Cbc0035I Maximum depth 0, 0 variables fixed on reduced cost
+Clp0006I 0  Obj 634 Primal inf 353.99996 (354)
+Clp0006I 200  Obj 634 Primal inf 111.99999 (112)
+Clp0006I 254  Obj 634
+Clp0000I Optimal - objective value 634
+Clp0000I Optimal - objective value 634
+ 187 -1 -1 -1 -1 119 -1 -1 -1 -1 -1 -1 37 -1 -1 349 -1 -1 522 -1 185 -1 -1 -1 -1 -1 -1 544 -1 -1 -1 -1 -1 417 423 -1 -1 39 -1 364 -1 -1 137 184 -1 33 -1 -1 -1 -1 532 -1 -1 -1 -1 -1 4 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 560 523 331 -1 -1 -1 -1 -1 407 -1 -1 -1 -1 -1 -1 -1 -1 301 -1 -1 489 -1 -1 -1 492 -1 -1 279 -1 -1 528 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 497 -1 -1 -1 409 -1 -1 -1 -1 374 -1 -1 -1 -1 -1 -1 -1 -1 578 -1 557 -1 588 -1 -1 -1 -1 420 142 -1 -1 -1 -1 -1 -1 -1 -1 115 -1 -1 -1 -1 -1 -1 254 -1 12 -1 -1 -1 412 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 317 -1 -1 300 -1 -1 -1 358 88 -1 475 -1 546 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 582 -1 -1 -1 -1 -1 479 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 571 -1 -1 311 -1 -1 -1 -1 -1 -1 -1 320 -1 -1 -1 159 -1 344 -1 -1 -1 -1 240 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 165 -1 -1 -1 -1 -1 -1 272 -1 289 -1 -1 -1 -1 -1 -1 -1 0 -1 373 -1 -1 -1 -1 -1 360 -1 -1 388 189 -1 -1 570 252 -1 -1 -1 -1 -1 241 -1 -1 319 -1 -1 342 -1 314 511 -1 -1 -1 -1 -1 -1 -1 -1 -1 281 348 -1 291 -1 -1 -1 -1 -1 -1 -1 -1 493 -1 333 -1 -1 -1 391 124 -1 -1 -1 42 -1 -1 -1 -1 472 -1 70 -1 76 -1 177 -1 -1 -1 -1 513 -1 -1 -1 576 68 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 152 -1 -1 447 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 69 -1 95 -1 -1 237 -1 -1 504 -1 56 -1 -1 438 -1 -1 98 -1 -1 -1 -1 -1 -1 -1 304 -1 -1 -1 27 -1 -1 435 -1 -1 -1 -1 -1 -1 -1 -1 43 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 161 -1 -1 330 -1 -1 -1 305 -1 -1 -1 -1 -1 -1 -1 -1 -1 562 -1 -1 143 50 -1 -1 -1 550 -1 -1 -1 -1 -1 -1 584 -1 -1 -1 -1 -1 -1 5 -1 587 -1 -1 -1 -1 -1 -1 -1 -1 20 85 -1 -1 -1 -1 431 -1 -1 -1 538 -1 -1 -1 -1 -1 248 -1 -1 -1 -1 -1 567 -1 369 -1 -1 -1 585 -1 -1 -1 -1 -1 -1 18 -1 -1 259 -1 135 -1 -1 92 -1 297 -1 -1 565 362 -1 -1 -1 -1 180 -1 45 -1 -1 -1 353 -1 415 15 -1 218 133 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+--
+0
+187
+281
+289
+330
+475
+0
+187
+281
+289
+330
+475
+46
+570
+810
+1836
+1863
+3005
+418
+1883
+2255
+3164
+300
+350
+414
+500
+1080
+2420
+3101
+109
+305
+692
+1250
+2082
+2396
+3064
+3235
+833
+1118
+1764
+2052
+2250
+2348
+322
+506
+1704
+1786
+2571
+3000
+--
+18
+20
+88
+135
+185
+489
+522
+557
+562
+18
+20
+88
+135
+185
+489
+522
+557
+562
+18
+204
+1223
+1902
+2367
+2554
+2594
+2865
+3229
+114
+947
+2681
+3352
+531
+2273
+2370
+2939
+2949
+2991
+3271
+40
+131
+435
+1095
+1216
+1360
+1744
+1852
+2755
+577
+1769
+2570
+2978
+3057
+2149
+2206
+2535
+1133
+1466
+2386
+2393
+2472
+3254
+642
+1354
+1557
+2118
+2402
+2592
+2871
+3095
+724
+1160
+1957
+2003
+2856
+--
+314
+319
+314
+319
+885
+1592
+--
+415
+504
+584
+415
+504
+584
+503
+1558
+2701
+2984
+962
+2610
+268
+739
+1025
+1433
+1513
+1655
+Clp0006I 0  Obj 0 Primal inf 109.99999 (110)
+Clp0006I 200  Obj 298 Primal inf 98.99999 (98)
+Clp0006I 400  Obj 407 Primal inf 74.999993 (74)
+Clp0006I 600  Obj 561 Primal inf 91.999992 (85)
+Clp0006I 800  Obj 634 Primal inf 42.999996 (42)
+Clp0006I 917  Obj 645
+Clp0000I Optimal - objective value 645
+Clp0000I Optimal - objective value 645
+Clp0006I 0  Obj 645 Primal inf 375.99996 (376)
+Clp0006I 200  Obj 645 Primal inf 145.99999 (146)
+Clp0006I 276  Obj 645
+Clp0000I Optimal - objective value 645
+Cbc0004I Integer solution of 645 found after 0 iterations and 0 nodes (0.03 seconds)
+Cbc0001I Search completed - best objective 645, took 0 iterations and 0 nodes (0.03 seconds)
+Cbc0035I Maximum depth 0, 0 variables fixed on reduced cost
+Clp0006I 0  Obj 645 Primal inf 375.99996 (376)
+Clp0006I 200  Obj 645 Primal inf 145.99999 (146)
+Clp0006I 276  Obj 645
+Clp0000I Optimal - objective value 645
+Clp0000I Optimal - objective value 645
+ 187 -1 -1 -1 -1 119 -1 -1 -1 -1 -1 -1 37 -1 -1 349 -1 -1 522 -1 185 -1 -1 -1 -1 -1 -1 134 -1 -1 -1 -1 -1 590 423 -1 -1 39 -1 364 -1 -1 137 184 -1 50 -1 -1 -1 -1 532 -1 -1 -1 -1 -1 4 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 560 523 331 -1 -1 -1 -1 -1 407 -1 -1 -1 321 -1 -1 -1 -1 301 -1 -1 489 -1 -1 -1 527 -1 -1 279 -1 -1 528 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 497 165 -1 -1 409 -1 -1 -1 -1 374 -1 -1 -1 -1 -1 -1 -1 -1 578 342 557 -1 588 -1 -1 -1 -1 420 -1 -1 -1 -1 -1 -1 -1 -1 -1 115 -1 -1 -1 -1 -1 -1 254 -1 12 -1 -1 -1 412 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 417 -1 275 215 -1 -1 -1 358 208 -1 475 -1 546 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 116 -1 -1 -1 582 -1 -1 135 -1 -1 -1 -1 -1 -1 -1 -1 142 -1 -1 -1 -1 179 -1 -1 -1 -1 -1 -1 -1 571 -1 -1 311 -1 -1 -1 -1 -1 -1 -1 320 -1 -1 -1 159 -1 344 -1 -1 -1 -1 240 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 415 -1 -1 -1 551 -1 319 -1 -1 -1 -1 -1 -1 -1 0 -1 373 -1 -1 -1 -1 -1 300 -1 -1 388 80 -1 -1 570 252 -1 -1 -1 -1 -1 241 -1 -1 224 -1 -1 -1 -1 314 511 360 -1 -1 -1 -1 -1 -1 -1 -1 281 348 -1 291 -1 -1 -1 -1 -1 -1 -1 -1 521 -1 333 -1 -1 -1 391 124 -1 -1 -1 42 -1 -1 -1 -1 472 -1 70 -1 76 -1 177 -1 -1 -1 -1 513 -1 -1 -1 576 68 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 152 -1 -1 447 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 69 -1 95 -1 -1 237 -1 -1 504 -1 56 -1 -1 438 -1 -1 98 -1 -1 305 -1 -1 -1 -1 304 -1 -1 426 27 -1 -1 435 -1 -1 -1 -1 -1 -1 -1 -1 43 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 161 -1 -1 330 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 562 -1 -1 -1 -1 -1 -1 -1 550 -1 -1 -1 -1 -1 -1 584 -1 -1 -1 -1 548 -1 5 -1 518 -1 -1 -1 -1 229 -1 -1 544 20 85 -1 -1 -1 434 431 -1 -1 -1 538 -1 -1 -1 -1 -1 248 -1 -1 -1 -1 -1 567 -1 369 -1 289 -1 585 33 -1 -1 -1 -1 -1 18 -1 -1 259 -1 509 -1 -1 92 -1 297 -1 -1 565 362 -1 -1 -1 -1 180 -1 45 -1 -1 -1 353 -1 88 15 -1 -1 133 -1 189 -1 -1 -1 -1 -1 -1 -1 -1 -1
+No Cycles!
+Getting Path!
+Now=212
+Now=582
+Now=353
+Now=42
+Now=137
+Now=588
+Now=133
+Now=578
+Now=45
+Now=50
+Now=532
+Now=538
+Now=248
+Now=320
+Now=511
+Now=5
+Now=119
+Now=409
+Now=95
+Now=279
+Now=551
+Now=33
+Now=590
+Now=189
+Now=546
+Now=369
+Now=513
+Now=518
+Now=229
+Now=179
+Now=275
+Now=415
+Now=504
+Now=584
+Now=88
+Now=489
+Now=562
+Now=509
+Now=548
+Now=289
+Now=0
+Now=187
+Now=475
+Now=330
+Now=281
+Now=319
+Now=314
+Now=224
+Now=142
+Now=420
+Now=438
+Now=435
+Now=27
+Now=134
+Now=342
+Now=521
+Now=544
+Now=567
+Now=297
+Now=300
+Now=388
+Now=152
+Now=115
+Now=497
+Now=550
+Now=585
+Now=15
+Now=349
+Now=124
+Now=374
+Now=68
+Now=560
+Now=259
+Now=240
+Now=311
+1774 311
+Now=241
+Stuck! moved=0
