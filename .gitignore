@@ -31,4 +31,9 @@
 build/*
 
 out.csv
+*.*~
+*.swp
+future_net.tar.gz
+bin/*
+
 
