@@ -43,6 +43,10 @@
 #include <vector>
 #include <tuple>
 #include <unordered_map>
+#include <OsiClpSolverInterface.hpp>
+#include <CbcSolver.hpp>
+
+
 using namespace std;
 typedef unsigned int uint;
 
@@ -150,13 +154,12 @@ vector<vector<int>> ins,outs;
 
 
 OsiClpSolverInterface load_problem(vector<Edge> graph,vector<int> must,int start,int end){
-    OsiClpSolverInterface ret;
 
     int noNodes = 0;
     for(auto e: graph) noNodes = max(noNodes,max(e.from,e.to)+1);
 
-    auto in_id = [=](int x){return x+graph.size();};
-    auto out_id = [=](int x){return x+noNodes + graph.size();};
+    auto in_id = [&](int x){return x+graph.size();};
+    auto out_id = [&](int x){return x+noNodes + graph.size();};
 
     OsiClpSolverInterface solver;
 
@@ -211,6 +214,8 @@ OsiClpSolverInterface load_problem(vector<Edge> graph,vector<int> must,int start
     solver.addRow(UnaryVector(out_id(end),1),0,0);
 
     for(int i=0;i<graph.size();i++) solver.setInteger(i);
+
+
 
     return solver;
 
@@ -436,39 +441,26 @@ private:
 
 
 
-vector<double> getSolution(OsiClpSolverInterface &problem,double limit=0.1){
-
-    cout<<"Solving with Limit:"<<limit<<endl;
+vector<double> getSolution(OsiClpSolverInterface &problem){
 
 
     CbcModel model(problem);
-
-    model.setMaximumSeconds(limit);
-    model.setMaximumSavedSolutions(10);
+    model.addCutGenerator(new CglProbing(),-1);
     model.addCutGenerator(new TSPCut(),1,NULL,true,true);
-
-
-
-
-    cout<<"Saved:"<<model.numberSavedSolutions()<<endl;
-
-//    model.addCutGenerator(&zeroHalf,-1);
+    model.setMaximumSeconds(1);
     model.initialSolve();
-    model.setPrintFrequency(1);
     model.branchAndBound();
 
+;
 
 
+    if(model.isProvenInfeasible()) return vector<double>();
 
-    if(model.isProvenInfeasible() ) return vector<double>();
-
-
-    const double *solution = model.solver()->getColSolution();
+    const double *solution = model.getColSolution();
     vector<double> ret;
     for(int i=0;i<topo.size();i++) ret.push_back(solution[i]);
     return ret;
 }
-
 
 
 
@@ -624,7 +616,7 @@ void search_route(char *topoStrs[5000], int edge_num, char *demandStr){
     vector<double> solution;
     do {
         solvedTime++;
-        solution = getSolution(problem,onetime);
+        solution = getSolution(problem);
         if(solution.empty()) {
 
             hasSolution = false;

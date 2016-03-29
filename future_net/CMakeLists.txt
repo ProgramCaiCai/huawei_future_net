@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 2.8)
 project(future_net)
 
 include(FindPkgConfig)
-pkg_search_module(CBC REQUIRED cbc)
+pkg_search_module(CBC REQUIRED osi-cbc)
 
 
 # include路径
