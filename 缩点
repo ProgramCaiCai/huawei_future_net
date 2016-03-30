@@ -1,0 +1,56 @@
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <iostream>
+using namespace std;
+#define N 10000
+#define M 20000
+struct Kosaraju{
+	int n,h1[N],ne1[M],to1[M],e1,h2[N],ne2[M],to2[M],e2;
+	int sta[N], top, mark[N], color;
+	bool vis[N];
+	void edge1(int u, int v) {
+		to1[e1] = v, ne1[e1] = h1[u];
+		h1[u] = e1++;
+	}
+	void edge2(int u, int v) {
+		to2[e2] = v, ne2[e2] = h2[u];
+		h2[u] = e2++;
+		}
+	void link(int u, int v) {
+			edge1(u, v);
+			edge2(v, u);
+	}
+	void dfs(int idx) {
+		vis[idx] = true;
+		for (int i = h1[idx]; ~i ; i=ne1[i])
+			if (!vis[to1[i]])
+				 dfs(to1[i]);
+		sta[top++] = idx;
+	}
+	void rdfs(int idx) {
+		vis[idx] = true;
+		mark[idx] = color;
+		for (int i = h2[i]; ~i; i=ne2[i])
+			if (!vis[to2[i^1]])
+				 rdfs(to2[i^1]);
+	}
+	void solve() {
+		int i;
+		memset(vis, 0, sizeof(vis));
+		for (i = top = 0; i < n; ++i)
+			if (!vis[i])
+				dfs(i);
+		memset(vis, 0, sizeof(vis));
+		for (i = top - 1, color = 0; i >= 0; --i)
+			if (!vis[sta[i]]) rdfs(sta[i]), ++color;
+	}
+	void init(int n) {
+			for (int i = 0; i <= n; ++i)
+				h2[i] = h1[i] = -1;
+			e1 = e2 = 0;
+		}
+}sp;
+int main()
+{
+}
