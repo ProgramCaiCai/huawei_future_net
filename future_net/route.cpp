@@ -50,10 +50,160 @@
 using namespace std;
 typedef unsigned int uint;
 
-using namespace std;
 
 
 
+
+
+#define N 1010
+#define M 1010*8*4
+#define inf 1000000000
+#define inf 1000000000
+
+struct Dinic {
+    int s, t, n, pre[N], cur[N], h[N], level[N], sign, q[N];
+    int  to[M], ne[M], e;
+
+
+    bool vis[N];
+
+    double cap[M],flow;
+    void liu(int u, int v, double w) {
+        to[e] = v, ne[e] = h[u], cap[e] = w;
+        h[u] = e++;
+    }
+    void link(int u, int v, double w) {
+        liu(u, v, w);
+        liu(v, u, 0);
+    }
+    void init(int n) {
+        for (int i = 0; i <= n; ++i)
+            h[i] = -1;
+        e = 0;
+        this->n =n;
+    }
+    bool bfs() {
+        int L = 0, R = 0;
+        fill(level, level + n, -1);
+        sign = q[R++] = t;
+        level[t] = 0;
+        while (L < R && level[s] == -1) {
+            int c = q[L++];
+            for (int k = h[c]; ~k; k = ne[k]) {
+                if (cap[k ^ 1] > 0 && level[to[k]] == -1)
+                    level[to[k]] = level[c] + 1, q[R++] = to[k];
+            }
+        }
+        return ~level[s];
+    }
+
+    void push() {
+        double pl = inf;
+        int p, k;
+        for (p = t; p != s; p = to[k ^ 1]) {
+            k = pre[p];
+            pl = min(pl, cap[k]);
+        }
+        for (p = t; p != s; p = to[k ^ 1]) {
+            k = pre[p];
+            cap[k] -= pl;
+            cap[k ^ 1] += pl;
+            if (cap[k] == 0)
+                sign = to[k ^ 1];
+        }
+        flow += pl;
+    }
+    void dfs(int c) {
+        if (c == t)
+            push();
+        else {
+            for (int &k = cur[c]; ~k; k = ne[k])
+                if (cap[k] > 0 && level[to[k]] + 1 == level[c]) {
+                    pre[to[k]] = k;
+                    dfs(to[k]);
+                    if (level[sign] > level[c])
+                        return;
+                    sign = t;
+                }
+            level[c] = -1;
+        }
+    }
+
+    void dfs2(int x){
+        vis[x]=1;
+        for (int &k = h[x]; ~k; k = ne[k])
+            if(cap[k]>0 && !vis[to[k]]) {
+                dfs2(to[k]);
+            }
+    }
+
+
+    const bool * mincut(){
+        for(int i=0;i<=n;i++) vis[i] = 0;
+        dfs2(s);
+        return vis;
+    }
+
+
+    double run(int _s, int _t) {
+        s = _s, t = _t;
+        flow = 0;
+        while (bfs()) {
+            for (int i = 0; i < n; ++i)
+                cur[i] = h[i];
+            dfs(s);
+        }
+        return flow;
+    }
+} maxflow;
+
+
+struct Kosaraju{
+    int n,h1[N],ne1[M],to1[M],e1,h2[N],ne2[M],to2[M],e2;
+    int sta[N], top, mark[N], color;
+    bool vis[N];
+    void edge1(int u, int v) {
+        to1[e1] = v, ne1[e1] = h1[u];
+        h1[u] = e1++;
+    }
+    void edge2(int u, int v) {
+        to2[e2] = v, ne2[e2] = h2[u];
+        h2[u] = e2++;
+    }
+    void link(int u, int v) {
+        edge1(u, v);
+        edge2(v, u);
+    }
+    void dfs(int idx) {
+        vis[idx] = true;
+        for (int i = h1[idx]; ~i ; i=ne1[i])
+            if (!vis[to1[i]])
+                dfs(to1[i]);
+        sta[top++] = idx;
+    }
+    void rdfs(int idx) {
+        vis[idx] = true;
+        mark[idx] = color;
+        for (int i = h2[i]; ~i; i=ne2[i])
+            if (!vis[to2[i]])
+                rdfs(to2[i]);
+    }
+    void solve() {
+        int i;
+        memset(vis, 0, sizeof(vis));
+        for (i = top = 0; i < n; ++i)
+            if (!vis[i])
+                dfs(i);
+        memset(vis, 0, sizeof(vis));
+        for (i = top - 1, color = 0; i >= 0; --i)
+            if (!vis[sta[i]]) rdfs(sta[i]), ++color;
+    }
+    void init(int n) {
+        for (int i = 0; i <= n; ++i)
+            h2[i] = h1[i] = -1;
+        e1 = e2 = 0;
+    }
+}sp;
 
 vector<string> &split(const string &s, char delim, vector<std::string> &elems) {
     stringstream ss(s);
@@ -98,23 +248,6 @@ vector<Edge> ve[1010];
 vector<Edge> vr[1010];
 int noNodes;
 
-class TSPEvent:public CbcEventHandler{
-    virtual CbcEventHandler* clone() {
-        return new TSPEvent();
-    }
-    virtual CbcAction event(CbcEventHandler::CbcEvent e) {
-
-        cout<<e<<endl;
-        if (e == CbcEventHandler::solution) {
-            cout<<"meow!!"<<endl;
-            return CbcEventHandler::addCuts;
-        }
-    }
-};
-
-
-
-
 
 
 CoinPackedVector UnaryVector(int ind,double x){
@@ -150,6 +283,15 @@ CoinPackedVector sumExp(vector<int> inds){
     return CoinPackedVector((int)inds.size(),&inds[0],&vals[0]);
 }
 
+
+CoinPackedVector sumMinus(vector<int> inds,vector<int> inds2){
+    vector<double> vals;
+    for(auto x:inds) vals.push_back(1);
+    for(auto x:inds2) vals.push_back(-1);
+    return CoinPackedVector((int)inds.size(),&inds[0],&vals[0]);
+}
+
+
 vector<vector<int>> ins,outs;
 
 
@@ -167,8 +309,6 @@ OsiClpSolverInterface load_problem(vector<Edge> graph,vector<int> must,int start
         solver.addCol(0,NULL,NULL,0,1,e.length);
     }
     for(int i=0;i<2*noNodes;i++) solver.addCol(0,NULL,NULL,0,1,0);
-
-
 
 
 
@@ -263,33 +403,23 @@ vector<set<int>> nowCuts;
 
 
 
-
-void AddCycleConstraint(OsiClpSolverInterface &problem,const set<int> &cycle){
-
-
-    vector<int> vars1,vars2,vars3;
-    for(auto elem:cycle){
-        for(auto e:ins[elem]) if(cycle.find(topo[e].from)==cycle.end()) vars1.push_back(e);
-        for(auto e:outs[elem]) if(cycle.find(topo[e].to)==cycle.end()) vars2.push_back(e);
-    }
-
+CoinPackedVector getCycleVars(const set<int> &cycle){
+    vector<int> vars3;
 
     for(auto elem:cycle){
         for(auto e:ins[elem]) if(cycle.find(topo[e].from)!=cycle.end()) vars3.push_back(e);
         for(auto e:outs[elem]) if(cycle.find(topo[e].to)!=cycle.end()) vars3.push_back(e);
     }
-
-
-    uniquefy(vars1);
-    uniquefy(vars2);
     uniquefy(vars3);
-    problem.addRow(sumExp(vars3),0,cycle.size()-1);
-//    problem.addRow(sumExp(vars1),1,10000);
-//    problem.addRow(sumExp(vars2),1,10000);
 
+    return sumExp(vars3);
 }
 
 
+
+void AddCycleConstraint(OsiClpSolverInterface &problem,const set<int> &cycle){
+    problem.addRow(getCycleVars(cycle),0,cycle.size()-1);
+}
 
 
 bool addConstraints(OsiClpSolverInterface &problem,vector<double> solution){
@@ -324,15 +454,6 @@ bool addConstraints(OsiClpSolverInterface &problem,vector<double> solution){
 
 
 
-
-
-
-
-
-
-
-
-
 class TSPCut:public CglCutGenerator{
 public:
 
@@ -342,55 +463,85 @@ public:
     The generated cuts are inserted into and returned in the
     collection of cuts cs.
     */
+
+
+    bool canReach[N];
+
+
+    void dfs(int x,const double *solution){
+        canReach[x] = 1;
+        for(auto e: vr[x]) if(fabs(solution[e.id])>1e-6  && !canReach[e.from]){
+                dfs(e.from,solution);
+            }
+    }
+
+
     void generateCuts( const OsiSolverInterface & si, OsiCuts & cs,
                        const CglTreeInfo info = CglTreeInfo()){
 
-        int n = (si.getNumCols() - topo.size())/2 ;
+        int n = noNodes ;
 
 
-        vector<int> p(n,-1);
+        memset(canReach,0,sizeof(canReach));
 
 
-        const double *colSolution = si.getColSolution();
+        const double *tmpSolution = si.getColSolution();
+        dfs(endNode,tmpSolution);
 
 
-        for(int i=0;i< topo.size() ;i++) if(fabs(colSolution[i]-1)<1e-8) p[topo[i].from] = topo[i].to;
+        maxflow.init(n);
+        for(int i=0;i<topo.size();i++)
+            if(fabs(tmpSolution[i])>1e-6) {
+                maxflow.link(topo[i].from,topo[i].to,tmpSolution[i]);
+            }
+
+
+        bool bmust[N];
+        for(auto e:must) bmust[e]=1;
+        bmust[endNode]=1;
+
+
+        for(int i=0;i<noNodes;i++) if(canReach[i] && i!=endNode){
+
+                Dinic maxflowcopy = maxflow;
+                double flow = maxflowcopy.run(i,endNode);
+
+
+                if(flow!=1){
+                    const bool *cut = maxflowcopy.mincut();
+
+                    set<int> one,other;
+                    for(int i=0;i<noNodes;i++) if(canReach[i] && cut[i]) one.insert(i);
+
+                    for(int i=0;i<noNodes;i++) if(canReach[i] && !cut[i]) other.insert(i);
 
 
 
-//        for(int i=0;i< topo.size() ;i++) cout<<colSolution[i]<<" ";
-//        cout<<endl;
+
+                    vector<int> atob,btoa;
+                    for(int i=0;i<topo.size();i++){
+                            if(cut[topo[i].from]  && !cut[topo[i].to]) atob.push_back(i);
+                        }
+                    cout<<"Across:"<<atob.size()<<endl;
 
 
 
-        auto cycles = checkCycle(p);
+                    if(atob.size()>0){
+                        OsiRowCut atobcut,btoacut;
+                        atobcut.setRow(sumExp(atob));
+                        atobcut.setLb(1);
+                        atobcut.setUb(10000);
 
 
-        if(!cycles.empty()){
-            for(auto cycle:cycles){
 
-                vector<int> vars3;
-                for(auto elem:cycle){
-                    for(auto e:ins[elem]) if(cycle.find(topo[e].from)!=cycle.end()) vars3.push_back(e);
-                    for(auto e:outs[elem]) if(cycle.find(topo[e].to)!=cycle.end()) vars3.push_back(e);
+                        cs.insert(atobcut);
+                    }
+
+                    //cs.insert(btoacut);
                 }
 
-                uniquefy(vars3);
-
-                if(!allTSPCuts[cycle]){
-                    allTSPCuts[cycle] = 1;
-                    nowCuts.push_back(cycle);
-                }
-//                OsiRowCut rc;
-//
-//
-//                rc.setRow(sumExp(vars3));
-//                rc.setLb(0);
-//                rc.setUb(cycle.size()-1);
-//                cs.insert(rc);
 
             }
-        }
 
 
     }
@@ -401,7 +552,7 @@ public:
         return new TSPCut();
     }
     inline int getAggressiveness() const
-    { return aggressive_;}
+    { return 100;}
 
     /**
        Set Aggressiveness - 0 = neutral, 100 is normal root node.
@@ -426,7 +577,7 @@ public:
     }
     /// Return true if needs optimal basis to do cuts
     bool needsOptimalBasis() const {
-        return true;
+        return false;
     };
 
     int maximumLengthOfCutInTree() const
@@ -441,18 +592,25 @@ private:
 
 
 
+void addFakeCost(OsiClpSolverInterface &problem,int amount){
+
+    const double *coefs = problem.getObjCoefficients();
+    for(int i=0;i<topo.size();i++) problem.setObjCoeff(i,coefs[i]+amount);
+}
+
+void totalFake(OsiClpSolverInterface &problem){
+    for(int i=0;i<topo.size();i++) problem.setObjCoeff(i,0);
+}
+
 vector<double> getSolution(OsiClpSolverInterface &problem){
 
 
     CbcModel model(problem);
-    model.addCutGenerator(new CglProbing(),-1);
-    model.addCutGenerator(new TSPCut(),1,NULL,true,true);
+ //   model.addCutGenerator(new TSPCut(),-1);
+    model.setLogLevel(0);
     model.setMaximumSeconds(1);
     model.initialSolve();
     model.branchAndBound();
-
-;
-
 
     if(model.isProvenInfeasible()) return vector<double>();
 
@@ -470,7 +628,6 @@ vector<double> getSolution(OsiClpSolverInterface &problem){
 vector<int> get_path(vector<double> solution){
 
     cout<<"Getting Path!"<<endl;
-
 
     vector<bool> vis(1000,0);
 
@@ -613,10 +770,27 @@ void search_route(char *topoStrs[5000], int edge_num, char *demandStr){
 
 
     int solvedTime = 0;
+
+
+    //totalFake(problem);
+
+
     vector<double> solution;
+
+
+
+
+
+
+
+
+
+
     do {
         solvedTime++;
         solution = getSolution(problem);
+
+        if(solvedTime>=10 && solvedTime%2==0) addFakeCost(problem,1);
         if(solution.empty()) {
 
             hasSolution = false;
