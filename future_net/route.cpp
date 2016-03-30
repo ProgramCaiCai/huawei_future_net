@@ -1,63 +1,19 @@
-
 #include "route.h"
 #include "lib_record.h"
-#include <stdio.h>
-#include <string>
-#include <sstream>
-#include <vector>
-#include <cstdlib>
-#include <cstring>
-#include <algorithm> 
-#include <sys/time.h>
+#include <bits/stdc++.h>
 
-
-
-
-#include <cassert>
-#include <iomanip>
-#include <array>
-
-#include "CoinPragma.hpp"
-// For Branch and bound
 #include "OsiSolverInterface.hpp"
 #include "CbcModel.hpp"
-#include "CoinModel.hpp"
-// For all different
-#include "CbcBranchCut.hpp"
-#include "CbcBranchActual.hpp"
-#include "CbcBranchAllDifferent.hpp"
-#include "CglCutGenerator.hpp"
-#include "CglZeroHalf.hpp"
 #include "CglFlowCover.hpp"
-#include "CglProbing.hpp"
-
 #include "CbcCutGenerator.hpp"
-#include "CglAllDifferent.hpp"
 #include "OsiClpSolverInterface.hpp"
-#include "CglStored.hpp"
-#include "CoinTime.hpp"
-
-#include "CglRedSplit.hpp"
-#include <algorithm>
-#include <queue>
-#include <vector>
-#include <tuple>
-#include <unordered_map>
-#include <OsiClpSolverInterface.hpp>
-#include <CbcSolver.hpp>
-
 
 using namespace std;
 typedef unsigned int uint;
 
 
-
-
-
-
 #define N 1010
 #define M 1010*8*4
-#define inf 1000000000
 #define inf 1000000000
 
 struct Dinic {
@@ -156,8 +112,6 @@ struct Dinic {
         return flow;
     }
 } maxflow;
-
-
 struct Kosaraju{
     int n,h1[N],ne1[M],to1[M],e1,h2[N],ne2[M],to2[M],e2;
     int sta[N], top, mark[N], color;
@@ -171,6 +125,9 @@ struct Kosaraju{
         h2[u] = e2++;
     }
     void link(int u, int v) {
+
+
+        cout << "Link " << u << " " << v << endl;
         edge1(u, v);
         edge2(v, u);
     }
@@ -199,11 +156,13 @@ struct Kosaraju{
             if (!vis[sta[i]]) rdfs(sta[i]), ++color;
     }
     void init(int n) {
+        this->n = n;
         for (int i = 0; i <= n; ++i)
             h2[i] = h1[i] = -1;
         e1 = e2 = 0;
+        color = 0;
     }
-}sp;
+} scc;
 
 vector<string> &split(const string &s, char delim, vector<std::string> &elems) {
     stringstream ss(s);
@@ -220,19 +179,15 @@ vector<std::string> split(const string &s, char delim) {
     return elems;
 }
 
-
 int str2int(const string &s){
 	return atoi(s.c_str());
 }
-
 
 vector<int> strVec2int(const vector<string> &s){
     vector<int> ret;
     for(auto e:s) ret.push_back(stoi(e));
     return ret;
 }
-
-
 
 struct Edge{
     int id,from,to,length;
@@ -294,7 +249,6 @@ CoinPackedVector sumMinus(vector<int> inds,vector<int> inds2){
 
 vector<vector<int>> ins,outs;
 
-
 OsiClpSolverInterface load_problem(vector<Edge> graph,vector<int> must,int start,int end){
 
     int noNodes = 0;
@@ -310,11 +264,8 @@ OsiClpSolverInterface load_problem(vector<Edge> graph,vector<int> must,int start
     }
     for(int i=0;i<2*noNodes;i++) solver.addCol(0,NULL,NULL,0,1,0);
 
-
-
     ins.resize(noNodes);
     outs.resize(noNodes);
-
 
 
     for(uint i=0;i<graph.size();i++) {
@@ -355,17 +306,11 @@ OsiClpSolverInterface load_problem(vector<Edge> graph,vector<int> must,int start
 
     for(int i=0;i<graph.size();i++) solver.setInteger(i);
 
-
-
     return solver;
 
 }
 
-
-
-
 vector<set<int>> checkCycle(const vector<int> &x){
-
     int groups = 0;
     vector<bool> vis(x.size(),0);
 
@@ -453,145 +398,6 @@ bool addConstraints(OsiClpSolverInterface &problem,vector<double> solution){
 }
 
 
-
-class TSPCut:public CglCutGenerator{
-public:
-
-    /**@name Generate Cuts */
-    //@{
-    /** Generate cuts for the model data contained in si.
-    The generated cuts are inserted into and returned in the
-    collection of cuts cs.
-    */
-
-
-    bool canReach[N];
-
-
-    void dfs(int x,const double *solution){
-        canReach[x] = 1;
-        for(auto e: vr[x]) if(fabs(solution[e.id])>1e-6  && !canReach[e.from]){
-                dfs(e.from,solution);
-            }
-    }
-
-
-    void generateCuts( const OsiSolverInterface & si, OsiCuts & cs,
-                       const CglTreeInfo info = CglTreeInfo()){
-
-        int n = noNodes ;
-
-
-        memset(canReach,0,sizeof(canReach));
-
-
-        const double *tmpSolution = si.getColSolution();
-        dfs(endNode,tmpSolution);
-
-
-        maxflow.init(n);
-        for(int i=0;i<topo.size();i++)
-            if(fabs(tmpSolution[i])>1e-6) {
-                maxflow.link(topo[i].from,topo[i].to,tmpSolution[i]);
-            }
-
-
-        bool bmust[N];
-        for(auto e:must) bmust[e]=1;
-        bmust[endNode]=1;
-
-
-        for(int i=0;i<noNodes;i++) if(canReach[i] && i!=endNode){
-
-                Dinic maxflowcopy = maxflow;
-                double flow = maxflowcopy.run(i,endNode);
-
-
-                if(flow!=1){
-                    const bool *cut = maxflowcopy.mincut();
-
-                    set<int> one,other;
-                    for(int i=0;i<noNodes;i++) if(canReach[i] && cut[i]) one.insert(i);
-
-                    for(int i=0;i<noNodes;i++) if(canReach[i] && !cut[i]) other.insert(i);
-
-
-
-
-                    vector<int> atob,btoa;
-                    for(int i=0;i<topo.size();i++){
-                            if(cut[topo[i].from]  && !cut[topo[i].to]) atob.push_back(i);
-                        }
-                    cout<<"Across:"<<atob.size()<<endl;
-
-
-
-                    if(atob.size()>0){
-                        OsiRowCut atobcut,btoacut;
-                        atobcut.setRow(sumExp(atob));
-                        atobcut.setLb(1);
-                        atobcut.setUb(10000);
-
-
-
-                        cs.insert(atobcut);
-                    }
-
-                    //cs.insert(btoacut);
-                }
-
-
-            }
-
-
-    }
-
-    TSPCut () {}
-    CglCutGenerator * clone() const {
-
-        return new TSPCut();
-    }
-    inline int getAggressiveness() const
-    { return 100;}
-
-    /**
-       Set Aggressiveness - 0 = neutral, 100 is normal root node.
-       Really just a hint to cut generator
-    */
-    inline void setAggressiveness(int value)
-    { aggressive_=value;}
-    /// Set whether can do global cuts
-
-
-    inline bool canDoGlobalCuts() const
-    {return true;}
-    /**
-       Returns true if may generate Row cuts in tree (rather than root node).
-       Used so know if matrix will change in tree.  Really
-       meant so column cut generators can still be active
-       without worrying code.
-       Default is true
-    */
-    bool mayGenerateRowCutsInTree() const{
-        return true;
-    }
-    /// Return true if needs optimal basis to do cuts
-    bool needsOptimalBasis() const {
-        return false;
-    };
-
-    int maximumLengthOfCutInTree() const
-    { return COIN_INT_MAX;}
-
-private:
-
-    int aggressive_;
-};
-
-
-
-
-
 void addFakeCost(OsiClpSolverInterface &problem,int amount){
 
     const double *coefs = problem.getObjCoefficients();
@@ -606,8 +412,6 @@ vector<double> getSolution(OsiClpSolverInterface &problem){
 
 
     CbcModel model(problem);
- //   model.addCutGenerator(new TSPCut(),-1);
-    model.setLogLevel(0);
     model.setMaximumSeconds(1);
     model.initialSolve();
     model.branchAndBound();
@@ -623,12 +427,9 @@ vector<double> getSolution(OsiClpSolverInterface &problem){
 
 
 
-
-
 vector<int> get_path(vector<double> solution){
 
     cout<<"Getting Path!"<<endl;
-
     vector<bool> vis(1000,0);
 
     vector<int> path;
@@ -701,10 +502,6 @@ tuple<int,int,vector<int>> readDemand(char *demandStr){
 };
 
 
-
-
-
-
 void init(char *topoStrs[5000], int edge_num, char *demandStr){
     topo = readTopo(topoStrs,edge_num);
     demand = readDemand(demandStr);
@@ -712,39 +509,6 @@ void init(char *topoStrs[5000], int edge_num, char *demandStr){
     endNode = get<1>(demand);
     must = get<2>(demand);
 }
-
-
-
-
-set<set<int>> all_triangles(){
-
-    map<pair<int,int>,int>  mp;
-    set<set<int>> ret;
-
-    for(auto e:topo) mp[make_pair(e.from,e.to)] =1;
-
-    for(int a=0;a<noNodes;a++){
-        for(auto e: ve[a]) {
-            int b = e.to;
-            for(auto e: vr[a]){
-                int c = e.from;
-
-                if(mp[make_pair(b,c)]){
-
-
-                    set<int> s;
-                    s.insert(a);
-                    s.insert(b);
-                    s.insert(c);
-                    ret.insert(s);
-                }
-            }
-        }
-    }
-    return ret;
-}
-
-
 
 
 
@@ -778,19 +542,11 @@ void search_route(char *topoStrs[5000], int edge_num, char *demandStr){
     vector<double> solution;
 
 
-
-
-
-
-
-
-
-
     do {
         solvedTime++;
         solution = getSolution(problem);
 
-        if(solvedTime>=10 && solvedTime%2==0) addFakeCost(problem,1);
+        //if(solvedTime>=10 && solvedTime%2==0) addFakeCost(problem,1);
         if(solution.empty()) {
 
             hasSolution = false;
