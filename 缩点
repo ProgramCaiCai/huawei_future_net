@@ -32,8 +32,8 @@ struct Kosaraju{
 		vis[idx] = true;
 		mark[idx] = color;
 		for (int i = h2[i]; ~i; i=ne2[i])
-			if (!vis[to2[i^1]])
-				 rdfs(to2[i^1]);
+			if (!vis[to2[i]])
+				 rdfs(to2[i]);
 	}
 	void solve() {
 		int i;
