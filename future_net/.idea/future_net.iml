@@ -6,7 +6,6 @@
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/io.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/route.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/TSPCut.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/route.cpp" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
